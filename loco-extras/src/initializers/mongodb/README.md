@@ -1,22 +1,35 @@
 # This Initializer adds support for connection to a MongoDB database
 
-It is recommended to be used with the base starter that does not come with a database connection (as those all use SQL), but it can be used with any other starter as well.
+There is extra functionality that loco supports through the `loco_extras` crate. Each extra can be pulled in optionally and is intgerated into your loco app by adding them as intializers.
 
-Steps to add this initializer to your project:
-* Add the mongodb and mongodb initializer to your loco project:
+This initializer adds support for using a MongoDB database. Choosing to use Mongo would mean sacrificing a lot of the features that loco provides out of the box, such as user authentication, but it can still be used quite effectively as loco will help with a lot of the boilerplate code.
+
+This initializer is recommended to be used with the base starter that does not come with a database connection (as those all use SQL), but it can be used with any other starter as well.
+
+## Steps
+
+To add this initializer to your project, follow these steps:
+
+### Add Dependencies
+
+Add the `mongodb` crate and mongodb initializer to your loco project.
 
 ```toml
+# Cargo.toml
 [dependencies]
 loco-extras = { version = "*", features = ["mongodb"] }
 mongodb = { version = "2.8.0"}
 ```
 
-* Add a mongodb connection section to you config.yaml file:
+### Add to the Config
+
+Add a mongodb connection section to you config.yaml file.
 
 ```yaml
+# config/[development/test/production...].yaml
 initializers:
   mongodb:
-    uri: {{get_env(name="MONGODB_URI", default="mongodb://localhost:27017/")}}
+    uri:  {{ get_env(name="MONGODB_URI", default="mongodb://localhost:27017/") }}
     db_name: "db_name"
     client_options:
       connectTimeout:
@@ -27,13 +40,15 @@ initializers:
         nanos: 0
 ```
 
-Although untested, the client_options should be able to take any options that the mongodb driver supports. The options are passed as a serde_json::Value, so however that type is serialized/deserialized should work here. Example above shows how `Duration` is serialized.
+Although untested, the `client_options` should be able to take any options that the mongodb driver supports. The options are passed as a `serde_json::Value`, so however that type is serialized/deserialized should work here. Example above shows how `Duration` is serialized.
 
 
-* Add the initializer to your `src/app.rs` file:
+### Add the Initializer
+
+Add the initializer to your `src/app.rs` file.
 
 ```rust
-
+// src/app.rs
 pub struct App;
 #[async_trait]
 impl Hooks for App {
@@ -49,9 +64,12 @@ impl Hooks for App {
 }
 ```
 
-* Now you can use the connection in your handler code:
+### Using the Connection
+
+Now you can use the connection in your handler code.
 
 ```rust
+// src/controllers/mongo.rs
 use axum::Extension;
 use loco_rs::prelude::*;
 use serde_json::Value;
@@ -68,3 +86,21 @@ pub fn routes() -> Routes {
         .add("/", get(fetch))
 }
 ```
+
+If you are adding a new file, don't forget to add it to the `src/controllers/mod.rs` file.
+
+### Adding to the Router
+
+If you created a new controller, you need to register the routes in your `src/app.rs` file.
+
+```rust
+// src/app.rs
+
+fn routes(ctx: &AppContext) -> AppRoutes {
+    AppRoutes::with_default_routes()
+        // Other routes...
+        .add_route(controllers::mongodb::routes())
+}
+```
+
+Now you can run the server with the config information set OR set the `MONGODB_URI` environment variable.
