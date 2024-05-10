@@ -130,7 +130,13 @@ initializers:
   mongodb:
     uri: {{get_env(name="MONGODB_URI", default="mongodb://localhost:27017/")}}
     db_name: "puzzling"
-    connect_timeout: 2000
+    client_options:
+      connectTimeout:
+        secs: 2
+        nanos: 0
+      serverSelectionTimeout:
+        secs: 2
+        nanos: 0
 
 # Redis Configuration
 redis:
