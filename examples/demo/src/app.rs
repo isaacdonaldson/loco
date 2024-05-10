@@ -49,6 +49,7 @@ impl Hooks for App {
             Box::new(initializers::view_engine::ViewEngineInitializer),
             Box::new(initializers::hello_view_engine::HelloViewEngineInitializer),
             Box::new(loco_extras::initializers::normalize_path::NormalizePathInitializer),
+            Box::new(loco_extras::initializers::mongodb::MongoDbInitializer),
         ];
 
         if ctx.environment != Environment::Test {
@@ -73,6 +74,7 @@ impl Hooks for App {
             .add_route(controllers::user::routes())
             .add_route(controllers::upload::routes())
             .add_route(controllers::responses::routes())
+            .add_route(controllers::mongodb::routes())
     }
 
     async fn boot(mode: StartMode, environment: &Environment) -> Result<BootResult> {

@@ -124,6 +124,14 @@ database:
   # Recreating schema when application loaded.  This is a dangerous operation, make sure that you using this flag only on dev environments or test mode
   dangerously_recreate: false
 
+
+# MongoDB Configuration
+initializers:
+  mongodb:
+    uri: {{get_env(name="MONGODB_URI", default="mongodb://localhost:27017/")}}
+    db_name: "puzzling"
+    connect_timeout: 2000
+
 # Redis Configuration
 redis:
   # Redis connection URI
