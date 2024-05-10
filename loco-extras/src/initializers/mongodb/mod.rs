@@ -1,5 +1,3 @@
-use std::time::Duration;
-
 use async_trait::async_trait;
 use axum::{Extension, Router as AxumRouter};
 use loco_rs::prelude::*;
@@ -52,6 +50,8 @@ async fn connect_to_db(config: MongoDbConfig) -> Result<Database> {
     let client = Client::with_options(client_options).map_err(|e| Error::Message(e.to_string()))?;
 
     let db = client.database(config.db_name.as_ref());
+
+    // Ping the Database to make sure a connection has been made
     db.run_command(doc! { "ping": 1 }, None)
         .await
         .map_err(|e| Error::Message(e.to_string()))?;
