@@ -20,6 +20,7 @@ pub struct RegisterParams {
     pub name: String,
 }
 
+// <snip id="model-validation">
 #[derive(Debug, Validate, Deserialize)]
 pub struct Validator {
     #[validate(length(min = 2, message = "Name must be at least 2 characters long."))]
@@ -27,6 +28,7 @@ pub struct Validator {
     #[validate(custom = "validation::is_valid_email")]
     pub email: String,
 }
+
 impl Validatable for super::_entities::users::ActiveModel {
     fn validator(&self) -> Box<dyn Validate> {
         Box::new(Validator {
@@ -35,6 +37,7 @@ impl Validatable for super::_entities::users::ActiveModel {
         })
     }
 }
+// </snip>
 
 #[async_trait::async_trait]
 impl ActiveModelBehavior for super::_entities::users::ActiveModel {
@@ -294,6 +297,8 @@ impl super::_entities::users::ActiveModel {
     ) -> ModelResult<Model> {
         self.password =
             ActiveValue::set(hash::hash_password(password).map_err(|e| ModelError::Any(e.into()))?);
+        self.reset_token = ActiveValue::Set(None);
+        self.reset_sent_at = ActiveValue::Set(None);
         Ok(self.update(db).await?)
     }
 }

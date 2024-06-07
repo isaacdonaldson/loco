@@ -21,7 +21,7 @@
  #### Loco is strongly inspired by Rails. If you know Rails and Rust, you'll feel at home. If you only know Rails and new to Rust, you'll find Loco refreshing. We do not assume you know Rails.
 
  ## Quick Start
-<!-- <snip id="quick-installation-command" inject_from="yaml"> -->
+<!-- <snip id="quick-installation-command" inject_from="yaml" template="sh"> -->
 ```sh
 cargo install loco-cli
 cargo install sea-orm-cli # Only when DB is needed
@@ -30,7 +30,7 @@ cargo install sea-orm-cli # Only when DB is needed
 
  Now you can create your new app (choose "`SaaS` app").
 
-<!-- <snip id="loco-cli-new-from-template" inject_from="yaml"> -->
+<!-- <snip id="loco-cli-new-from-template" inject_from="yaml" template="sh"> -->
 ```sh
 ❯ loco new
 ✔ ❯ App name? · myapp
@@ -43,7 +43,7 @@ myapp
 
 
 To configure a database , please run a local postgres database with loco:loco and a db named [insert app]_development.
-<!-- <snip id="postgres-run-docker-command" inject_from="yaml"> -->
+<!-- <snip id="postgres-run-docker-command" inject_from="yaml" template="sh"> -->
 ```sh
 docker run -d -p 5432:5432 \
   -e POSTGRES_USER=loco \
@@ -58,7 +58,7 @@ docker run -d -p 5432:5432 \
 
  Now `cd` into your `myapp` and start your app:
 
- <!-- <snip id="starting-the-server-command-with-output" inject_from="yaml"> -->
+ <!-- <snip id="starting-the-server-command-with-output" inject_from="yaml" template="sh"> -->
 ```sh
 $ cargo loco start
 
